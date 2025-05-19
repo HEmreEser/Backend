@@ -10,10 +10,13 @@ import edu.hm.cs.kreisel_backend.repository.EquipmentRepository;
 import edu.hm.cs.kreisel_backend.repository.LocationRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -29,6 +32,7 @@ public class EquipmentController {
     @Autowired
     private LocationRepository locationRepo;
 
+    // Equipment anlegen
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody EquipmentRequest request) {
         try {
@@ -66,6 +70,14 @@ public class EquipmentController {
         return equipmentRepo.findByAvailableTrue().stream()
                 .map(EquipmentResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    // Einzelnes Equipment per ID (REST-konform!)
+    @GetMapping("/{id}")
+    public EquipmentResponse getEquipmentById(@PathVariable Long id) {
+        Equipment equipment = equipmentRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Equipment nicht gefunden"));
+        return new EquipmentResponse(equipment);
     }
 
     // Nur verfügbare einer Kategorie
@@ -120,13 +132,54 @@ public class EquipmentController {
                 .collect(Collectors.toList());
     }
 
+    // Alle Kategorien
     @GetMapping("/categories")
     public List<Category> getAllCategories() {
         return categoryRepo.findAll();
     }
 
+    // Alle Standorte
     @GetMapping("/locations")
     public List<Location> getAllLocations() {
         return locationRepo.findAll();
+    }
+
+    // Equipment löschen
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteEquipment(@PathVariable Long id) {
+        Optional<Equipment> equipmentOpt = equipmentRepo.findById(id);
+        if (equipmentOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Equipment nicht gefunden");
+        }
+        equipmentRepo.deleteById(id);
+        return ResponseEntity.ok("Equipment gelöscht");
+    }
+
+    // Equipment aktualisieren
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateEquipment(@PathVariable Long id, @Valid @RequestBody EquipmentRequest request) {
+        Optional<Equipment> equipmentOpt = equipmentRepo.findById(id);
+        if (equipmentOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Equipment nicht gefunden");
+        }
+        try {
+            Equipment equipment = equipmentOpt.get();
+            equipment.setName(request.getName());
+            equipment.setType(request.getType() != null ? request.getType() : "");
+            equipment.setDescription(request.getDescription() != null ? request.getDescription() : "");
+
+            Category category = categoryRepo.findById(request.getCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Category with ID " + request.getCategoryId() + " not found"));
+            Location location = locationRepo.findById(request.getLocationId())
+                    .orElseThrow(() -> new RuntimeException("Location with ID " + request.getLocationId() + " not found"));
+
+            equipment.setCategory(category);
+            equipment.setLocation(location);
+
+            equipmentRepo.save(equipment);
+            return ResponseEntity.ok(new EquipmentResponse(equipment));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error updating equipment: " + e.getMessage());
+        }
     }
 }
