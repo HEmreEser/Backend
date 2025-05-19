@@ -1,24 +1,21 @@
 package edu.hm.cs.kreisel_backend.dto;
 
-import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
 import java.time.LocalDate;
 
-@Setter
-@Getter
+@Data
 public class RentalRequest {
-
-    @NotNull(message = "Equipment ID is required")
+    @NotNull
     private Long equipmentId;
 
-    @NotNull(message = "Start date is required")
+    @NotNull
     private LocalDate startDate;
 
-    @NotNull(message = "End date is required")
+    @NotNull
     private LocalDate endDate;
 
-    // Optional field for testing without authentication
+    // Optional: Für Tests oder spezielle Fälle, im echten Betrieb meist nicht nötig
     private Long userId;
 }

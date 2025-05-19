@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface EquipmentRepository extends JpaRepository<Equipment, Long> {
     List<Equipment> findByAvailableTrue();
+    List<Equipment> findByAvailable(boolean available);
 
     // Original methods
     List<Equipment> findByCategory_NameAndAvailableTrue(String category);
@@ -18,4 +19,11 @@ public interface EquipmentRepository extends JpaRepository<Equipment, Long> {
     List<Equipment> findByCategoryIdAndAvailableTrue(Long categoryId);
     List<Equipment> findByLocationIdAndAvailableTrue(Long locationId);
     List<Equipment> findByCategoryIdAndLocationIdAndAvailableTrue(Long categoryId, Long locationId);
+
+    // NEU für flexibles Filtern
+    List<Equipment> findByCategoryId(Long categoryId);
+    List<Equipment> findByLocationId(Long locationId);
+    List<Equipment> findByCategoryIdAndAvailable(Long categoryId, boolean available);
+    List<Equipment> findByLocationIdAndAvailable(Long locationId, boolean available);
+    List<Equipment> findByCategoryIdAndLocationIdAndAvailable(Long categoryId, Long locationId, boolean available);
 }

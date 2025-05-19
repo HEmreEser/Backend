@@ -13,6 +13,7 @@ public class RentalResponse {
     private final LocalDate startDate;
     private final LocalDate endDate;
     private final boolean returned;
+    private final boolean extended;
 
     public RentalResponse(Rental rental) {
         this.id = rental.getId();
@@ -21,5 +22,6 @@ public class RentalResponse {
         this.startDate = rental.getStartDate();
         this.endDate = rental.getEndDate();
         this.returned = rental.isReturned();
+        this.extended = rental.isExtended();
     }
 }
