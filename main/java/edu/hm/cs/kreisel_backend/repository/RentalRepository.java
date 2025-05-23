@@ -17,8 +17,4 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
 
     Optional<Rental> findByItemIdAndReturnDateIsNull(Long itemId);
 
-    List<Rental> findByReturnDateAfter(LocalDate date);
-
-    List<Rental> findByReturnDateIsNull();
-
 }

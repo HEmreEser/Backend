@@ -1,11 +1,11 @@
 package edu.hm.cs.kreisel_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
-
 import lombok.Getter;
 import lombok.Setter;
+
 @Setter
 @Getter
 @Entity
@@ -17,14 +17,16 @@ public class Rental {
         private Long id;
 
         @ManyToOne
+        @JoinColumn(name = "user_id")
+        @JsonBackReference("user-rentals")
         private User user;
 
         @ManyToOne
+        @JoinColumn(name = "item_id")
         private Item item;
 
         private LocalDate rentalDate; // Wann ausgeliehen
-        private LocalDate returnDate; // Wann zurückgegeben (null = aktiv)
+        private LocalDate endDate; // Geplantes Rückgabedatum (beim Ausleihen festgelegt)
+        private LocalDate returnDate; // Tatsächliches Rückgabedatum (null = noch nicht zurückgegeben)
         private boolean extended = false; // Max. 1 Verlängerung erlaubt
-
-
-    }
+}
