@@ -4,6 +4,7 @@ import edu.hm.cs.kreisel_backend.model.Rental;
 import edu.hm.cs.kreisel_backend.model.User;
 import edu.hm.cs.kreisel_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -34,6 +36,16 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        // Passwort hashen falls es noch nicht gehashed ist
+        if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        // Auto-Admin für admin-emails
+        if (user.getEmail() != null && user.getEmail().toLowerCase().startsWith("admin")) {
+            user.setRole(User.Role.ADMIN);
+        }
+
         return userRepository.save(user);
     }
 
@@ -41,7 +53,12 @@ public class UserService {
         User existing = getUserById(id);
         existing.setFullName(updatedUser.getFullName());
         existing.setEmail(updatedUser.getEmail());
-        existing.setPassword(updatedUser.getPassword());
+
+        // Passwort nur aktualisieren wenn neues angegeben wurde
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+            existing.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        }
+
         existing.setRole(updatedUser.getRole());
         return userRepository.save(existing);
     }

@@ -44,8 +44,8 @@ INSERT INTO app_item (name, size, available, description, brand, location, gende
 VALUES
     ('Winterjacke', 'L', TRUE, 'Warme Winterjacke für Damen', 'North Face', 'LOTHSTRASSE', 'DAMEN', 'KLEIDUNG', 'JACKEN', 'NEU'),
     ('Skihose', 'M', TRUE, 'Wasserdicht und bequem', 'Burton', 'LOTHSTRASSE', 'HERREN', 'KLEIDUNG', 'HOSEN', 'GEBRAUCHT'),
-    ('Snowboard', '120cm', FALSE, 'Perfekt für Anfänger', 'Nitro', 'KARLSTRASSE', 'HERREN', 'EQUIPMENT', 'Snowboards', 'GEBRAUCHT'),
-    ('Flasche', '1.5L', TRUE, 'BPA-frei', 'Nalgene', 'PASING', 'UNISEX', 'EQUIPMENT', 'Flaschen', 'NEU'),
+    ('Snowboard', '120cm', FALSE, 'Perfekt für Anfänger', 'Nitro', 'KARLSTRASSE', 'HERREN', 'EQUIPMENT', 'SNOWBOARDS', 'GEBRAUCHT'),
+    ('Flasche', '1.5L', TRUE, 'BPA-frei', 'Nalgene', 'PASING', 'UNISEX', 'EQUIPMENT', 'FLASCHEN', 'NEU'),
     ('Handschuhe', 'S', TRUE, 'Winddicht', 'Reusch', 'LOTHSTRASSE', 'DAMEN', 'ACCESSOIRES', 'HANDSCHUHE', 'NEU');
 
 -- 📦 Beispiel-Rental (OHNE id - lass AUTO_INCREMENT arbeiten!)
@@ -59,3 +59,4 @@ VALUES (
                    (SELECT id FROM app_user WHERE email = 'ben@hm.edu'),
                    (SELECT id FROM app_item WHERE name = 'Snowboard')
        );
+

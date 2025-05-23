@@ -50,7 +50,7 @@ public class Item {
 
     public enum Subcategory {
         HOSEN, JACKEN, STIEFEL, WANDERSCHUHE,
-        MUETZEN, HANDSCHUHE, SCHALS, BRILLEN, Flaschen, SKi, Snowboards, Helme
+        MUETZEN, HANDSCHUHE, SCHALS, BRILLEN, FLASCHEN, SKI, SNOWBOARDS, HELME
     }
 
     public void markAsUnavailable() {
